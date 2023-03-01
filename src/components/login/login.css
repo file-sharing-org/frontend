@@ -1,0 +1,15 @@
+.container {
+	width: 50%;
+	margin: auto;
+	
+}
+
+.form {
+	margin-top: 10%;
+	width: 100%;
+	background-color: white;
+	padding: 12px;
+	border-radius: 10px;
+	border: 2px solid black;
+
+}
