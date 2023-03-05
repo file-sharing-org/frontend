@@ -1,0 +1,63 @@
+.filepath {
+	display: flex;
+	margin-right: 5px;
+	text-decoration: none;
+	font-size: 25px;
+}
+
+.filepath_cyan {
+	color: #2C3E50;
+}
+
+.filepath__svg {
+	height: 100%;
+}
+
+.filepath__svgdiv {
+	width: 10px;
+	line-height: 50px;
+}
+
+.filepath__text {
+	line-height: 50px;
+}
+
+.filepath__corner {
+	position: relative;
+	overflow: hidden;
+	padding-right: 5px
+}
+
+.corner__div {
+	position:relative;
+	top: -4px;
+	width: 0;
+	height: 0;
+	border-top: 29px solid transparent;
+	border-left:  30px solid black;
+	border-bottom: 29px solid transparent;
+}
+
+.corner_first {
+	left: 2px;
+	border-left:  30px solid black;
+}
+
+.corner_second {
+	position: absolute;
+	left: 0px;
+	border-left:  30px solid black;
+}
+
+.filepath:last-child .corner__div {
+	display: none;
+}
+
+.filebox {
+	height:50px;
+	display: flex;
+}
+
+.filebox_white {
+	background-color: #cccccc;
+}
