@@ -7,9 +7,12 @@
 html,
 body {
 	widows: 100%;
+}
+
+#root {
 	height: 100%;
 }
 
 body {
-	background: #123aca;
+	background: #dddddd;
 }
