@@ -6,8 +6,9 @@ import FilePath from './filePath';
 
 function FileBox(props) {
 	return (
-		<Box sx={{mt:'20px', bgcolor: '#ffffff', height:1}}>
+		<Box sx={{display: 'flex', flexFlow:'column', mt:'20px', bgcolor: '#ffffff', height:1}}>
 			<FilePath />
+			<div></div>
 		</Box>
 	);
 }

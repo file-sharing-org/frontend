@@ -5,7 +5,25 @@
 	font-size: 25px;
 }
 
-.filepath_cyan {
+.filepath_home {
+	background-color: #00bdd3;
+}
+
+.filepath_normal {
+	background-color: #cccccc;
+}
+
+.filepath__corner>.filepath_normal {
+	border-left: 30px solid #cccccc;
+	background-color: transparent;
+}
+
+.filepath__corner>.filepath_home {
+	border-left: 30px solid #00bdd3;
+	background-color: transparent;
+}
+
+.filepath_graytext {
 	color: #2C3E50;
 }
 
@@ -19,7 +37,7 @@
 }
 
 .filepath__text {
-	line-height: 50px;
+	line-height: 200%;
 }
 
 .filepath__corner {
@@ -54,10 +72,13 @@
 }
 
 .filebox {
-	height:50px;
 	display: flex;
 }
 
-.filebox_white {
+.filebox_50 {
+	height: 50px;
+}
+
+.filebox_gray {
 	background-color: #cccccc;
 }
