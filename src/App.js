@@ -1,5 +1,5 @@
 import React from "react";
-import {Route, Routes} from "react-router-dom";
+import {Route, Routes, Navigate} from "react-router-dom";
 import FilePage from "./components/filePage";
 import Login from "./components/login/login";
 import Register from "./components/login/register";
@@ -11,7 +11,8 @@ function App() {
       <Routes>
         <Route exact path="/login" element={<Login/>}/>
         <Route exact path="/register" element={<Register/>}/>
-        <Route exact path="*" element={<FilePage/>}/>
+        <Route exact path="/file" element={<FilePage/>}/>
+        <Route exact path="*" element={<Navigate to="/file"/>}/>
       </Routes>
   );
 }
