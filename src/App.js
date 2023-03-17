@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route exact path="/login" element={<Login/>}/>
         <Route exact path="/register" element={<Register/>}/>
-        <Route exact path="/file" element={<FilePage/>}/>
+        <Route exact path="/file/*" element={<FilePage/>}/>
         <Route exact path="*" element={<Navigate to="/file"/>}/>
       </Routes>
   );

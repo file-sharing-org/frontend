@@ -3,6 +3,7 @@
 	margin-right: 5px;
 	text-decoration: none;
 	font-size: 25px;
+	overflow: hidden;
 }
 
 .filepath_home {
@@ -38,11 +39,14 @@
 
 .filepath__text {
 	line-height: 200%;
+	font-family: Roboto;
+	max-width: 6vw;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .filepath__corner {
 	position: relative;
-	overflow: hidden;
 	padding-right: 5px
 }
 
@@ -69,6 +73,12 @@
 
 .filepath:last-child .corner__div {
 	display: none;
+}
+
+.filepath:last-child .filepath__text {
+	overflow: auto;
+	text-overflow: auto;
+	max-width: none;
 }
 
 .filebox {
