@@ -18,30 +18,30 @@ function FileElement({src=false, text='', to='#'}) {
 				<div className={`corner__div corner_second ${cssClass}`}/>
 			</div>
 		</Link>
-		<Outlet/>
 		</>
 	);
 }
 
-function RecRoute() {
-	return (<Route path='aboba'/>);
-}
 
-
-function FilePath(props) {
-	console.log(window.location.pathname);
-	const folders = [{title: 'main222222222222222222222222222222222222222', folders:[
-		{title: 'pictures', folders: [{title: 'f1', folders:[]}]},
-		{title: 'bimba', folders: [{title: 'bmb', folders:[]}]}
-	]}];
+function FilePath({location}) {
 	
 
-	const recF=(x, to='/file') => {
-		return x.map((item)=>
-				<Route path={item['title']} element={<FileElement text={item['title']} to={`${to}/${item['title']}`}/>}>
-					{recF(item['folders'], `${to}/${item['title']}`)}
-				</Route>
-		);
+	const recF=(x) => {
+		console.log('PATHFILE');
+		console.log(x);
+		let index = 6;
+		let items = [];
+		while(x.indexOf('/',index)>=0) {
+			index = x.indexOf('/', index);
+			items.push(x.slice(0, index));
+			index+=1;
+		}
+		if(x.length>5) {
+			items.push(x);
+		}
+		console.log(items);
+		return items.map((item)=>
+			<FileElement text={item.slice(item.lastIndexOf('/')+1)} to={item}/>);
 	}
 
 
@@ -49,9 +49,7 @@ function FilePath(props) {
 		<Box className="filebox filebox_gray filebox_50">
 			<FileElement src={true} to='/file'/>
 			<div/>
-			<Routes>
-				{recF(folders)}
-			</Routes>
+			{recF(location.pathname)}
 		</Box>
 	);
 }

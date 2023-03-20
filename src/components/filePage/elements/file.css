@@ -1,0 +1,36 @@
+.file {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	text-decoration: none;
+	margin-right: 20px;
+	margin-bottom: 20px;
+	width: 6vw;
+	height: 8vh;
+}
+
+.file__text {
+	font-family: Roboto;
+	text-align: center;
+	height: 24px;
+	color: #2C3E50;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.file__svg {
+	margin: auto;
+	display: block;
+	margin-bottom: 6px;
+	color: #2C3E50;
+	transition: color 0.2s;
+}
+
+.file:hover .file__svg {
+	color: #5C6E80;
+}
+
+.file:hover .file__text {
+	color: #5C6E80;
+}

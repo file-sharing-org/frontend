@@ -4,11 +4,15 @@ import {TextField, Paper, FormControl, Button, FormHelperText} from "@mui/materi
 import {Link} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {useState, useEffect} from "react";
+import Cookies from 'universal-cookie';
+import axios from 'axios'
 
 function LoginForm() {
 
-	const [formValues, setFormValues] = useState({username: '', password:''});
+	const [formValues, setFormValues] = useState({name: '', password:''});
 	const [error, setError] = useState(false);
+
+	const cookies = new Cookies();
 
 	const handleInputChange = (e) => {
 		setFormValues({
@@ -19,13 +23,28 @@ function LoginForm() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		console.log(formValues);
+		axios.post('http://127.0.0.1:8000/api/login',
+			formValues,
+			{headers:{
+				'Content-Type': 'application/json'
+			}})
+		.then(response=>{
+			const data = response['data'];
+			console.log(data);
+			if(data['status']==='success') {
+				cookies.set('token', data['authorisation']['token']);
+			}
+		})
+		.catch(error=>{
+			console.log(error);
+		});
 	}
 
 	return (
 		<Paper elevation={10} sx={{padding: '1em', 'border-radius': '10px'}}>
 			<form onSubmit={handleSubmit}>
 				<FormControl sx={{width: '100%', '& .MuiTextField-root': { m: 1}}}>
-					<TextField id='username' name='username' label="Логин" onChange={handleInputChange} value={formValues.username}/>
+					<TextField id='name' name='name' label="Логин" onChange={handleInputChange} value={formValues.username}/>
 					<TextField name='password' type="password" label="Пароль" onChange={handleInputChange} value={formValues.password}/>
 					<FormHelperText error>{error?'Неверные данные':' '}</FormHelperText>
 					<Button variant="contained" sx={{m: 1}} type='submit'>Войти</Button>

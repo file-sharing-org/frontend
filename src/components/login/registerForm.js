@@ -1,10 +1,11 @@
 import React from "react";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
 import "./registerForm.css";
 import {TextField, Paper, FormControl, Button} from "@mui/material";
 import {Link} from "react-router-dom";
 import { useForm, Controller} from "react-hook-form";
-
+import Cookies from 'universal-cookie';
+import axios from 'axios'
 
 
 
@@ -14,8 +15,11 @@ function RegisterForm() {
 	const [isPasswordEquals, setPasswordEquals] = useState(false);
 	const [isPasswordDity, setPasswordDirty] = useState(false);
 
+	const passwordRef = React.createRef();
+	const cookies = new Cookies();
 
-	const [formValues, setFormValues] = useState({email:'', password1:'', password2:''});
+
+	const [formValues, setFormValues] = useState({email:'', name:'', password:'', password_confirmation:''});
 	const checkEmail=()=> {
 		
 		if(!/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(formValues.email)) {
@@ -30,17 +34,21 @@ function RegisterForm() {
 	},[formValues.email]);
 
 	const checkPassword = ()=>{
-		if(formValues.password1.length>0 && formValues.password2.length>0 && formValues.password2==formValues.password1) {
+		if(passwordRef.current==null) return;
+		const psref = passwordRef.current.children[1].children[0];
+		if(formValues.password.length>0 && formValues.password_confirmation.length>0 && formValues.password_confirmation==formValues.password) {
 			setPasswordEquals(true);
+			psref.setCustomValidity('');
 		} else {
 			setPasswordEquals(false);
+			psref.setCustomValidity('Пароли не совпадают');
 		}
 	}
 
 	useEffect(()=>{
 		console.log('effect');
 		checkPassword();
-	}, [formValues.password1, formValues.password2]);
+	}, [formValues.password, formValues.password_confirmation]);
 
 	const handleInputChange = (e) => {
 		setFormValues({
@@ -55,7 +63,18 @@ function RegisterForm() {
 		setEmailDirty(true);
 		console.log(formValues);
 		if(isValidEmail && isPasswordEquals) {
-			//TODO
+			axios.post('http://127.0.0.1:8000/api/register',
+				formValues,
+				{headers: {'Content-Type': 'application/json'}})
+			.then(response=>{
+				const data = response['data'];
+				if(data['status']==='success') {
+					cookies.set('token', data['authorisation']['token']);	
+				}
+			})
+			.catch(error=>{
+				console.log(error);
+			});
 		}
 	}
 	
@@ -67,11 +86,13 @@ function RegisterForm() {
 					<TextField name='email' id='email' label="Почта" required
 						onChange={(e)=>{handleInputChange(e);setEmailDirty(true);}} value={formValues.email}
 						helperText={isEmailDirty&&!isValidEmail?"Неправильный формат почты":" "} error={isEmailDirty&&!isValidEmail}
-						inputProps={{pattern: '[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+'}}/>
+						type='email'/>
+
+					<TextField name='name' label='Логин' required onChange={(e)=>{handleInputChange(e);}} value={formValues.name}/>
 					
-					<TextField name='password1' type="password" label="Пароль" onChange={(e)=>{handleInputChange(e);setPasswordDirty(true)}} value={formValues.password1} required error={isPasswordDity&&!isPasswordEquals}/>
+					<TextField name='password' type="password" label="Пароль" onChange={(e)=>{handleInputChange(e);setPasswordDirty(true)}} value={formValues.password1} required error={isPasswordDity&&!isPasswordEquals}/>
 					
-					<TextField name='password2' type="password" label="Повторите пароль" helperText={isPasswordDity&&!isPasswordEquals?"Пароли не совпадают":" "} onChange={(e)=>{handleInputChange(e);}} value={formValues.password2} required error={isPasswordDity&&!isPasswordEquals}/>	
+					<TextField ref={passwordRef} name='password_confirmation' type="password" label="Повторите пароль" helperText={isPasswordDity&&!isPasswordEquals?"Пароли не совпадают":" "} onChange={(e)=>{handleInputChange(e);}} value={formValues.password2} required error={isPasswordDity&&!isPasswordEquals}/>	
 					
 					<Button variant="contained" sx={{m: 1}} type="submit">Зарегистрироваться</Button>
 					
