@@ -1,7 +1,7 @@
 import React from "react";
 import "./loginForm.css";
 import {TextField, Paper, FormControl, Button, FormHelperText} from "@mui/material";
-import {Link} from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import {useState, useEffect} from "react";
 import Cookies from 'universal-cookie';
@@ -11,6 +11,7 @@ function LoginForm() {
 
 	const [formValues, setFormValues] = useState({name: '', password:''});
 	const [error, setError] = useState(false);
+	const [redirect, setRedirect] = useState(false);
 
 	const cookies = new Cookies();
 
@@ -32,7 +33,8 @@ function LoginForm() {
 			const data = response['data'];
 			console.log(data);
 			if(data['status']==='success') {
-				cookies.set('token', data['authorisation']['token']);
+				cookies.set('token', data['token']);
+				setRedirect(true);
 			}
 		})
 		.catch(error=>{
@@ -41,6 +43,8 @@ function LoginForm() {
 	}
 
 	return (
+		<>
+		{redirect&&<Navigate to='/file'/>}
 		<Paper elevation={10} sx={{padding: '1em', 'border-radius': '10px'}}>
 			<form onSubmit={handleSubmit}>
 				<FormControl sx={{width: '100%', '& .MuiTextField-root': { m: 1}}}>
@@ -54,6 +58,7 @@ function LoginForm() {
 				</FormControl>
 			</form>
 		</Paper>
+		</>
 		);
 }
 

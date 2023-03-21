@@ -22,7 +22,7 @@ function RegisterForm() {
 	const [formValues, setFormValues] = useState({email:'', name:'', password:'', password_confirmation:''});
 	const checkEmail=()=> {
 		
-		if(!/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(formValues.email)) {
+		if(!/^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(formValues.email)) {
 			// console.log("govno");
 			setIsValidEmail(false);
 		} else {
@@ -69,7 +69,7 @@ function RegisterForm() {
 			.then(response=>{
 				const data = response['data'];
 				if(data['status']==='success') {
-					cookies.set('token', data['authorisation']['token']);	
+					cookies.set('token', data['token']);	
 				}
 			})
 			.catch(error=>{
