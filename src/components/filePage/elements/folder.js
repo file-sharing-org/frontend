@@ -5,11 +5,11 @@ import {ReactComponent as FolderLockSvg} from '../../../svg/folderLock.svg';
 import './folder.css';
 import {Tooltip } from '@mui/material';
 
-function Folder({name='', lock=false, to='#'}) {
+function Folder({onmenu, name='', lock=false, to='#'}) {
 
 	return (
 		
-		<div className='folder'>
+		<div className='folder' onContextMenu={onmenu}>
 			<Link to={to} className='folder__link'>
 				
 					{lock?	<FolderLockSvg className='folder__svg'/>:
