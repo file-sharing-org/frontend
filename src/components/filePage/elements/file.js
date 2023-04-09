@@ -53,6 +53,7 @@ function File({name='', onmenu}) {
 	const handleMenu = (e) => {
 		e.target=fileRef.current;
 		e.fileName = name;
+		e.isFile=true;
 		onmenu(e);
 	}
 
@@ -79,9 +80,13 @@ function NewFile({onFile}) {
 			onFile(selFile);
 	}
 
+	const handleMenu = (e) => {
+		e.preventDefault();
+	}
+
 	return (
 		
-		<div className='file' onClick={clickHandle}>
+		<div className='file' onClick={clickHandle} onContextMenu={handleMenu}>
 			<FileNewFile className='file__svg'/>
 			<input ref={fileInput} type='file' name='file' style={{display: 'none'}} onChange={handleFile}/>
 		</div>

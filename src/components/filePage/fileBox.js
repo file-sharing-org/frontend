@@ -7,11 +7,12 @@ import Folder from './elements/folder';
 import {File, NewFile} from './elements/file';
 import Cookies from 'universal-cookie';
 import axios from 'axios'
-import NewFolderFialog from './dialogs/newfolder';
+import FileContextMenu from './contextmenu';
+import FileAPI from '../../api/FileAPI';
+
 
 function Titles({names, menu, setter}) {
 	const outlet = useOutlet();
-	console.log(outlet);
 	
 	useEffect(()=>{
 		if(names.length==1 && names[0]==false) {
@@ -33,7 +34,6 @@ function Titles({names, menu, setter}) {
 
 function FileTitles({names, menu, setter}) {
 	const outlet = useOutlet();
-	console.log(outlet);
 	useEffect(()=>{
 		if(names.length==1 && names[0]==false) {
 			if(!outlet) {
@@ -51,14 +51,12 @@ function FileTitles({names, menu, setter}) {
 		);
 }
 
-function FileBox(props) {
-	const cookies = new Cookies();
+function FileBox({token}) {
 
 	const location = useLocation();
-	const token = cookies.get('token');
 	const [folderRoutes, setFolderRoutes] = useState({title:"/", directories:[false], files:[false]});
 	const [contextMenu, setContextMenu] = useState(null);
-	const [newFileOpen, setNewFileOpen] = useState(false);
+	
 	const [loadingState, setLoadingState] = useState(false);
 
 	function findOrCreate(x, value) {
@@ -83,11 +81,7 @@ function FileBox(props) {
 	const updateLocation = () => {
 		console.log(location);
 		const path = location['pathname'].slice(6);
-		axios.get('http://127.0.0.1:8000/api/open-folder',
-			{params:{
-				folder:path
-			},
-			headers: {'Authorization': `Bearer ${token}`}})
+		FileAPI.openFolder({path, token})
 		.then(response=> {
 			const data = response['data'];
 			if(data['status']==='success') {
@@ -123,6 +117,20 @@ function FileBox(props) {
 						//ref['directories'].push({title:title, directories:[], files:[]});
 					}
 					console.log(value);
+					ref['directories'] = ref['directories'].filter((x)=>{
+						for(var i=0; i<data['directories'].length; i++) {
+							let dname = data['directories'][i];
+							if(dname.lastIndexOf('/')>=0) {
+								dname = dname.slice(dname.lastIndexOf('/')+1);
+							}
+							if(dname===x['title']) {
+								return true;
+							}
+						}
+						return false;
+					});
+
+					
 					return {...value};
 				});
 			}
@@ -147,7 +155,8 @@ function FileBox(props) {
 	        ? {
 	            mouseX: event.clientX + 2,
 	            mouseY: event.clientY - 6,
-	            isFile: event.target.className==='file',
+	            isFile: event.isFile!=null&&event.isFile,
+	            isFolder: event.isFolder!=null&&event.isFolder,
 	            filename: event.fileName
 	          }
 	        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
@@ -157,73 +166,11 @@ function FileBox(props) {
 	    );
   	};
 
-  	const handleClose = () => {
-		setContextMenu(null);
-	};
-
-	const createFolder = () => {
-		setNewFileOpen(true);
-		console.log("new filedialog");
-		setContextMenu(null);
-	}
-
-	const downloadFile = () => {
-		handleClose();
-		const filename = contextMenu.filename;
-		const path = location['pathname'].slice(6);
-
-		const name = path + (path.length>0?'/'+filename:filename);
-		const config = {
-		    	headers: {Authorization: `Bearer ${token}`}
-		    }
-		axios({
-		    url: 'http://127.0.0.1:8000/api/files?path='+name, //your url
-		    method: 'GET',
-		    responseType: 'blob', // important
-		    headers: {Authorization: `Bearer ${token}`},
-		})
-		.then(response=> {
-			const data = response['data'];
-			const href = URL.createObjectURL(response.data);
-
-		    // create "a" HTML element with href to file & click
-		    const link = document.createElement('a');
-		    link.href = href;
-		    link.setAttribute('download', filename); //or any other extension
-		    document.body.appendChild(link);
-		    link.click();
-
-		    // clean up "a" element & remove ObjectURL
-		    document.body.removeChild(link);
-		    URL.revokeObjectURL(href);
-		})
-		.catch((error)=> {
-			console.log(error);
-		})
-
-	}
-
-	const createFile = (file) => {
-		console.log(file);
-		const path = location['pathname'].slice(6);
-		let formData = new FormData();
-		formData.append('file', file[0]);
-		formData.append('folder', path);
-		axios.post('http://127.0.0.1:8000/api/upload-file', formData,
-			{headers: {'Authorization': `Bearer ${token}`}})
-		.then(response=> {
-			const data = response['data'];
-			updateLocation();
-		})
-		.catch((error)=> {
-			console.log(error);
-		})
-	}
+  	
 
 
 	const recF=(x) => {
 		if(x!=null && x.length==1 && x[0]==false) return null;
-		console.log(x);
 		return x.map((item)=>
 				<Route exact path={item['title']} element={<><Titles menu={handleContextMenu} setter={setLoadingState} names={item['directories']} /><Outlet/></>}>
 					{recF(item['directories'])}
@@ -238,6 +185,19 @@ function FileBox(props) {
 					{recFL(item['directories'])}
 				</Route>
 		);
+	}
+
+	const createFile = (file) => {
+		console.log(file);
+		const path = location['pathname'].slice(6);
+		FileAPI.uploadFile({file: file[0], path, token})
+		.then(response=> {
+			const data = response['data'];
+			updateLocation();
+		})
+		.catch((error)=> {
+			console.log(error);
+		})
 	}
 
 
@@ -266,21 +226,9 @@ function FileBox(props) {
 					<NewFile onFile={createFile}/>
 				</div>
 			</div>
-			<Menu
-		        open={contextMenu !== null}
-		        onClose={handleClose}
-		        anchorReference="anchorPosition"
-		        anchorPosition={
-		          contextMenu !== null
-		            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
-		            : undefined
-		        }>
-		        <MenuItem onClick={createFolder}>Новая папка</MenuItem>
-		        {contextMenu&&contextMenu.isFile&&<MenuItem onClick={downloadFile}>Скачать</MenuItem>}
-		      </Menu>
-
+			<FileContextMenu token={token} updateLocation={updateLocation} contextMenu={contextMenu} setContextMenu={setContextMenu} />
 		</Box>
-		<NewFolderFialog token={token} updater={updateLocation} setter={setNewFileOpen} open={newFileOpen}/>
+		
 		</>
 
 	);

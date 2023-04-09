@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import { useForm, Controller} from "react-hook-form";
 import Cookies from 'universal-cookie';
 import axios from 'axios'
-
+import AuthAPI from '../../api/AuthAPI';
 
 
 function RegisterForm() {
@@ -63,9 +63,7 @@ function RegisterForm() {
 		setEmailDirty(true);
 		console.log(formValues);
 		if(isValidEmail && isPasswordEquals) {
-			axios.post('http://127.0.0.1:8000/api/register',
-				formValues,
-				{headers: {'Content-Type': 'application/json'}})
+			AuthAPI.register(formValues)
 			.then(response=>{
 				const data = response['data'];
 				if(data['status']==='success') {

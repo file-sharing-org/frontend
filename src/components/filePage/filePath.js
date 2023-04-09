@@ -5,7 +5,6 @@ import {Link, Route, Routes, Navigate, Outlet } from "react-router-dom";
 import './filePath.css';
 
 function FileElement({src=false, text='', to='#'}) {
-	console.log(to);
 	const cssClass = src?'filepath_home':'filepath_normal';
 	return (
 		<>
@@ -27,8 +26,6 @@ function FilePath({location}) {
 	
 
 	const recF=(x) => {
-		console.log('PATHFILE');
-		console.log(x);
 		let index = 6;
 		let items = [];
 		while(x.indexOf('/',index)>=0) {
@@ -39,7 +36,6 @@ function FilePath({location}) {
 		if(x.length>5) {
 			items.push(x);
 		}
-		console.log(items);
 		return items.map((item)=>
 			<FileElement text={item.slice(item.lastIndexOf('/')+1)} to={item}/>);
 	}

@@ -5,20 +5,35 @@ import {useLocation} from "react-router-dom";
 import axios from 'axios'
 import FileAPI from '../../../api/FileAPI';
 
-function NewFolderFialog({open, setter, token, updater, close}) {
-
+export default function RenameDialog({open, setter, token, updater, contextmenu, close}) {
 	const location = useLocation();
-	const [folderName, setFolderName] = useState('');
+	let filename = null;
+	let isFile = false;
+	if(contextmenu!=null) {
+		filename=contextmenu.filename;
+		isFile=contextmenu.isFile;
+	}
+	const [fName, setFName] = useState(null);
+
+	useEffect(()=>{
+		if(contextmenu) {
+			setFName(contextmenu.filename);
+		}
+	}, [contextmenu]);
+
+	
 
 	const handleClose = () => {
 		setter(false);
-		setFolderName('');
+		setFName('');
 	}
 
-	const create = () => {
+	const rename = () => {
 		const path = location['pathname'].slice(6);
-		const name = path + (path.length>0?'/'+folderName:folderName);
-		FileAPI.createFolder({name, token})
+		const name = path + (path.length>0?'/'+filename:filename);
+		console.log(name);
+		const req = isFile?FileAPI.renameFile:FileAPI.renameFolder;
+		req({name, newName: fName, token})
 		.then(response=> {
 			const data = response['data'];
 			updater();
@@ -32,10 +47,12 @@ function NewFolderFialog({open, setter, token, updater, close}) {
 	}
 	return (
 		<Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Новая папка</DialogTitle>
+        <DialogTitle>Переименновать</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Укажите название новой папки
+          	{contextmenu&&contextmenu.isFile?
+          		'Укажите новое название файла':
+            	'Укажите новое название папки'}
           </DialogContentText>
           <TextField
             autoFocus
@@ -44,17 +61,15 @@ function NewFolderFialog({open, setter, token, updater, close}) {
             label="Название"
             fullWidth
             variant="standard"
-            value={folderName}
-            onChange={(e)=>{setFolderName(e.target.value)}}
+            value={fName}
+            onChange={(e)=>{setFName(e.target.value)}}
           />
         </DialogContent>
         <DialogActions>
         	<Button onClick={handleClose}>Отмена</Button>
-          	<Button onClick={create}>Создать</Button>
+          	<Button onClick={rename}>Переименновать</Button>
           
         </DialogActions>
       </Dialog>
 	);
 }
-
-export default NewFolderFialog;

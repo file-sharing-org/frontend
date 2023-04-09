@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import {useState, useEffect} from "react";
 import Cookies from 'universal-cookie';
 import axios from 'axios'
+import AuthAPI from '../../api/AuthAPI';
 
 function LoginForm() {
 
@@ -24,16 +25,12 @@ function LoginForm() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		console.log(formValues);
-		axios.post('http://127.0.0.1:8000/api/login',
-			formValues,
-			{headers:{
-				'Content-Type': 'application/json'
-			}})
+		AuthAPI.login(formValues)
 		.then(response=>{
 			const data = response['data'];
 			console.log(data);
 			if(data['status']==='success') {
-				cookies.set('token', data['token']);
+				cookies.set('token', data['token'], {path:'/'});
 				setRedirect(true);
 			}
 		})

@@ -1,4 +1,5 @@
 import React from "react";
+import {useRef} from 'react';
 import {Link} from "react-router-dom";
 import {ReactComponent as FolderSvg} from '../../../svg/folder.svg';
 import {ReactComponent as FolderLockSvg} from '../../../svg/folderLock.svg';
@@ -7,9 +8,18 @@ import {Tooltip } from '@mui/material';
 
 function Folder({onmenu, name='', lock=false, to='#'}) {
 
+	const folderRef = useRef(null);
+
+	const handleMenu = (e) => {
+		e.target=folderRef.current;
+		e.fileName = name;
+		e.isFolder = true;
+		onmenu(e);
+	}
+
 	return (
 		
-		<div className='folder' onContextMenu={onmenu}>
+		<div ref={folderRef} className='folder' onContextMenu={handleMenu}>
 			<Link to={to} className='folder__link'>
 				
 					{lock?	<FolderLockSvg className='folder__svg'/>:
