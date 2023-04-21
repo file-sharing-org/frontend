@@ -2,7 +2,7 @@ import React from "react";
 import {useState, useEffect, useRef} from "react";
 import "./registerForm.css";
 import {TextField, Paper, FormControl, Button} from "@mui/material";
-import {Link} from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 import { useForm, Controller} from "react-hook-form";
 import Cookies from 'universal-cookie';
 import axios from 'axios'
@@ -14,6 +14,7 @@ function RegisterForm() {
 	const [isEmailDirty, setEmailDirty] = useState(false);
 	const [isPasswordEquals, setPasswordEquals] = useState(false);
 	const [isPasswordDity, setPasswordDirty] = useState(false);
+	const [redirect, setRedirect] = useState(false);
 
 	const passwordRef = React.createRef();
 	const cookies = new Cookies();
@@ -68,6 +69,7 @@ function RegisterForm() {
 				const data = response['data'];
 				if(data['status']==='success') {
 					cookies.set('token', data['token']);	
+					setRedirect(true);
 				}
 			})
 			.catch(error=>{
@@ -79,6 +81,7 @@ function RegisterForm() {
 
 	return (
 		<Paper elevation={10} sx={{padding: '1em', 'border-radius': '10px'}}>
+			{redirect&&<Navigate to='/file'/>}
 			<form onSubmit={onSubmit}>
 				<FormControl sx={{width: '100%', '& .MuiTextField-root': { m: 1}}}>
 					<TextField name='email' id='email' label="Почта" required
