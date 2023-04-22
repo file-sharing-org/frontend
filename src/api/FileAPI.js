@@ -92,5 +92,12 @@ export default {
 				folder:name
 			},
 			headers: {'Authorization': `Bearer ${token}`}});
+	},
+	createLink: ({token, filename})=> {
+		return api.post('create-link', null,
+			{params:{
+				path: filename
+			},
+			headers: {'Authorization': `Bearer ${token}`}});
 	}
 }
