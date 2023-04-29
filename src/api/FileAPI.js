@@ -86,6 +86,50 @@ export default {
 			},
 			headers: {'Authorization': `Bearer ${token}`}});
 	},
+	addGroups: ({token, groups, filepath, permission})=>{
+		return api.post('permission-add-groups',
+		{
+			path: filepath,
+			g: groups,
+			permission: permission
+		},
+		{
+			headers: {'Authorization': `Bearer ${token}`}
+		})
+	},
+	addUsers: ({token, users, filepath, permission})=>{
+		return api.post('permission-add-users', 
+		{
+			path: filepath,
+			u: users,
+			permission: permission
+		},
+		{
+			headers: {'Authorization': `Bearer ${token}`}
+		})
+	},
+	deleteGroups: ({token, groups, filepath, permission})=>{
+		return api.post('permission-delete-groups',
+		{
+			path: filepath,
+			g: groups,
+			permission: permission
+		},
+		{
+			headers: {'Authorization': `Bearer ${token}`}
+		})
+	},
+	deleteUsers: ({token, users, filepath, permission})=>{
+		return api.post('permission-delete-users',
+		{
+				path: filepath,
+				u: users,
+				permission: permission
+		},
+		{
+			headers: {'Authorization': `Bearer ${token}`}
+		})
+	},
 	createFolder: ({name, token}) => {
 		return api.post('create-folder', null,
 			{params:{
