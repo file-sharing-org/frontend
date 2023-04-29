@@ -1,0 +1,7 @@
+.editusers {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	flex: 0 0;
+	height: 50vh;
+}

@@ -13,10 +13,14 @@ import DownloadIcon from '@mui/icons-material/Download';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import GroupIcon from '@mui/icons-material/Group';
 import LinkIcon from '@mui/icons-material/Link';
 import NewFolderFialog from './dialogs/newfolder';
 import RenameDialog from './dialogs/rename';
 import DeleteDialog from './dialogs/delete';
+import EditUsersDialog from './dialogs/editusers';
+import EditGroupsDialog from './dialogs/editgroups';
 import ShowLinkDialog from './dialogs/showfilelink';
 import FileAPI from '../../api/FileAPI';
 
@@ -26,6 +30,8 @@ export default function FileContextMenu({contextMenu, setContextMenu, token, upd
 	const [renameOpen, setRenameOpen] = useState(false);
 	const [showLinkOpen, setShowLinkOpen] = useState(false);
 	const [deleteOpen, setDeleteOpen] = useState(false);
+	const [editUsersOpen, setEditUsersOpen] = useState(false);
+	const [editGroupsOpen, setEditGroupsOpen] = useState(false);
 	const [fileCopy, setFileCopy] = useState(null);
 	const [fileCut, setFileCut] = useState(null);
 
@@ -136,6 +142,14 @@ export default function FileContextMenu({contextMenu, setContextMenu, token, upd
 
 	}
 
+	const handleEditUsers = () => {
+		setEditUsersOpen(true);
+	}
+
+	const handleEditGroups = () => {
+		setEditGroupsOpen(true);
+	}
+
 	return (
 		<>
 			<Menu
@@ -156,12 +170,17 @@ export default function FileContextMenu({contextMenu, setContextMenu, token, upd
 		        {contextMenu&&(contextMenu.isFile||contextMenu.isFolder)&&<MenuItem onClick={handleDelete}><ListItemIcon><DeleteIcon fontSize="small"/></ListItemIcon>Удалить</MenuItem>}
 		        {contextMenu&&contextMenu.isFile&&<Divider />}
 		        {contextMenu&&contextMenu.isFile&&<MenuItem onClick={handleLink}><ListItemIcon><LinkIcon fontSize="small"/></ListItemIcon>Копировать ссылку</MenuItem>}
+		        {contextMenu&&contextMenu.isFile&&<Divider/>}
+		        {contextMenu&&(contextMenu.isFile||contextMenu.isFolder)&&<MenuItem onClick={handleEditUsers}><ListItemIcon><ManageAccountsIcon fontSize="small" /></ListItemIcon>Редактировать пользователей </MenuItem>}
+		        {contextMenu&&(contextMenu.isFile||contextMenu.isFolder)&&<MenuItem onClick={handleEditGroups}><ListItemIcon><GroupIcon fontSize="small" /></ListItemIcon>Редактировать группы </MenuItem>}
 		      </Menu>
 
 		    <NewFolderFialog token={token} updater={updateLocation} setter={setNewFileOpen} close={handleClose} open={newFileOpen}/>
 			<RenameDialog token={token} updater={updateLocation} setter={setRenameOpen} close={handleClose} open={renameOpen} contextmenu={contextMenu}/>
 			<DeleteDialog token={token} updater={updateLocation} setter={setDeleteOpen} close={handleClose} open={deleteOpen} contextmenu={contextMenu}/>
 			<ShowLinkDialog token={token} open={showLinkOpen} setter={setShowLinkOpen} close={handleClose} contextmenu={contextMenu}/>
+			<EditUsersDialog token={token} open={editUsersOpen} setter={setEditUsersOpen} close={handleClose} contextmenu={contextMenu}/>
+			<EditGroupsDialog token={token} open={editGroupsOpen} setter={setEditGroupsOpen} close={handleClose} contextmenu={contextMenu}/>
 		</>
 	);
 }

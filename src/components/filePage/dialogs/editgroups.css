@@ -1,0 +1,8 @@
+.editgroups {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	flex: 0 0;
+	height: 30vh;
+	margin-top: 2;
+}
