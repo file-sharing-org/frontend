@@ -3,6 +3,7 @@ import {Route, Routes, Navigate} from "react-router-dom";
 import FilePage from "./components/filePage";
 import Login from "./components/login/login";
 import Register from "./components/login/register";
+import AdminPage from "./components/admin/adminpage";
 import "./styles.css"
 
 
@@ -12,6 +13,7 @@ function App() {
         <Route exact path="/login" element={<Login/>}/>
         <Route exact path="/register" element={<Register/>}/>
         <Route exact path="/file/*" element={<FilePage/>}/>
+        <Route exact path="/admin" element={<AdminPage/>}/>
         <Route exact path="*" element={<Navigate to="/file"/>}/>
       </Routes>
   );

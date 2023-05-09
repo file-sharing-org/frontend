@@ -204,11 +204,12 @@ function FileBox({token}) {
 
 	return (
 		<>
-		<Box sx={{display: 'flex', flexFlow:'column', mt:'20px', bgcolor: '#ffffff', height:1}}>
+		<Box sx={{display: 'flex', flexFlow: 'column', mt:'20px', bgcolor: '#ffffff', height:'100%'}}>
 			<FilePath location={location}/>
 			
 			<div style={{height: '100%'}} onContextMenu={handleContextMenu}>
 				{loadingState&&<div style={{width: '100%', height:'100%', display:'flex', 'alignItems':'center', 'justifyContent': 'center'}}><CircularProgress /></div>}
+				
 				<div style={{display: 'flex', padding: 10, flexWrap: 'wrap'}}>
 					<Routes>
 						<Route exact path="/" element={<><Titles setter={setLoadingState} names={folderRoutes['directories']}/><Outlet/></>}>
@@ -223,9 +224,10 @@ function FileBox({token}) {
 							{recFL(folderRoutes['directories'])}
 						</Route>
 					</Routes>
-					<NewFile onFile={createFile}/>
+					{!loadingState && <NewFile onFile={createFile} />}
 				</div>
 			</div>
+			
 			<FileContextMenu token={token} updateLocation={updateLocation} contextMenu={contextMenu} setContextMenu={setContextMenu} />
 		</Box>
 		
