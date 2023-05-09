@@ -9,18 +9,19 @@ import GroupAPI from '../../../api/GroupAPI';
 
 export default function RenameGroupDialog({token, open, setter}) {
 	const [groupList, setGroupList] = useState([]);
-	const [selectedGroup, setSelectedGroup] = useState('everyone');
+	const [selectedGroup, setSelectedGroup] = useState('');
 	const [groupName, setGroupName] = useState('');
 
 	useEffect(()=>{
 		if(open) {
-			setSelectedGroup('everyone');
+			setSelectedGroup('');
 			setGroupName((prev)=>'');
 			GroupAPI.getGroups()
 			.then(response=> {
 				const data = response['data'];
 				console.log(data);
-				setGroupList(data['groups'].map((item)=>item['name']));
+				setGroupList(data['groups'].map((item)=>item['name']).filter((x)=>x!=='everyone'));
+				setSelectedGroup(data['groups'].filter((x)=>x['name']!=='everyone')[0]['name']);
 			})
 			.catch(error=>{
 				console.log(error);
@@ -71,7 +72,7 @@ export default function RenameGroupDialog({token, open, setter}) {
 		        </DialogContent>
 		        <DialogActions>
 			        <Button onClick={handleClose}>Отмена</Button>
-			        <Button onClick={handleSubmit}>Переименновать</Button>
+			        <Button disabled={groupName===''} onClick={handleSubmit}>Переименновать</Button>
 		        </DialogActions>
 	     	</Dialog>
      	</>

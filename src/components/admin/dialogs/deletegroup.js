@@ -12,16 +12,16 @@ export default function DeleteGroupDialog({token, open, setter}) {
 	const [formValues, setFormValues] = useState({email: '', name: '', password: ''});
 	const [isValidEmail, setIsValidEmail] = useState(true);
 	const [groupList, setGroupList] = useState([]);
-	const [selectedGroup, setSelectedGroup] = useState('everyone');
+	const [selectedGroup, setSelectedGroup] = useState('');
 
 	useEffect(()=>{
 		if(open) {
-			setSelectedGroup('everyone');
+			setSelectedGroup('');
 			GroupAPI.getGroups()
 			.then(response=> {
 				const data = response['data'];
 				console.log(data);
-				setGroupList(data['groups'].map((item)=>item['name']));
+				setGroupList(data['groups'].map((item)=>item['name']).filter((x)=>x!=='everyone'));
 			})
 			.catch(error=>{
 				console.log(error);
@@ -70,7 +70,7 @@ export default function DeleteGroupDialog({token, open, setter}) {
 		        </DialogContent>
 		        <DialogActions>
 			        <Button onClick={handleClose}>Отмена</Button>
-			        <Button onClick={handleSubmit} color="error">Удалить группу</Button>
+			        <Button disabled={selectedGroup===''} onClick={handleSubmit} color="error">Удалить группу</Button>
 		        </DialogActions>
 	     	</Dialog>
      	</>
