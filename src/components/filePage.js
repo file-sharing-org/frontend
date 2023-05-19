@@ -41,7 +41,7 @@ function FilePage() {
 		})
 		.catch(error=>{
 			inRequest = false;
-			setToken(null);
+			setToken('');
 			console.log(error);
 		});
 	},[]);
